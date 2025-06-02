@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Gestor - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        .login-card {
+            max-width: 550px;
+        }
+        
+        .form-floating {
+            margin-bottom: 0.75rem;
+        }
+        
+        .login-body {
+            padding: 1.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="brand-icon">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <div class="login-logo">Cadastro de Gestor</div>
+                <div class="login-subtitle">Crie sua conta para acessar o sistema</div>
+            </div>
+            <div class="login-body">
+                <form id="gestorForm" class="login-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="nomeGestor" placeholder="Nome completo" required>
+                                <label for="nomeGestor"><i class="bi bi-person me-1"></i> Nome completo</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="empresaGestor" placeholder="Nome da empresa" required>
+                                <label for="empresaGestor"><i class="bi bi-building me-1"></i> Empresa</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="emailGestor" placeholder="nome@exemplo.com" required>
+                        <label for="emailGestor"><i class="bi bi-envelope me-1"></i> Email</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="senhaGestor" placeholder="Senha" required minlength="6">
+                                <label for="senhaGestor"><i class="bi bi-lock me-1"></i> Senha</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="confirmarSenha" placeholder="Confirmar senha" required minlength="6">
+                                <label for="confirmarSenha"><i class="bi bi-lock-fill me-1"></i> Confirmar senha</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger login-alert d-none" id="cadastroError">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span id="errorMessage">Erro ao cadastrar</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Criar Conta</span>
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="index.html" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Voltar para o Login
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="login-footer">
+                © 2025 Sistema de Estoque - Todos os direitos reservados
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gestorForm = document.getElementById('gestorForm');
+            
+            gestorForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const errorElement = document.getElementById('cadastroError');
+                const errorMessage = document.getElementById('errorMessage');
+                
+                // Verificar se as senhas conferem
+                const senha = document.getElementById('senhaGestor').value;
+                const confirmarSenha = document.getElementById('confirmarSenha').value;
+                
+                if (senha !== confirmarSenha) {
+                    errorMessage.textContent = 'As senhas não correspondem';
+                    errorElement.classList.remove('d-none');
+                    return;
+                }
+                
+                // Preparar dados do gestor
+                const gestor = {
+                    nomeGestor: document.getElementById('nomeGestor').value,
+                    empresaGestor: document.getElementById('empresaGestor').value,
+                    emailGestor: document.getElementById('emailGestor').value,
+                    senhaGestor: senha
+                };
+                
+                try {
+                    // Enviar requisição para cadastrar gestor
+                    const response = await fetch(`${Utils.API_URL}/gestores`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(gestor)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erro ao cadastrar gestor');
+                    }
+                    
+                    // Redirecionar para login com mensagem de sucesso
+                    alert('Cadastro realizado com sucesso! Faça login para continuar.');
+                    window.location.href = 'index.html';
+                    
+                } catch (error) {
+                    errorMessage.textContent = error.message || 'Erro ao cadastrar gestor';
+                    errorElement.classList.remove('d-none');
+                    console.error('Erro:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
