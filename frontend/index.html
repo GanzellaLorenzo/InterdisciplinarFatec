@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="brand-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="login-logo">Estoque Fácil</div>
+                <div class="login-subtitle">Controle de produtos e movimentações</div>
+            </div>
+            <div class="login-body">
+                <form id="loginForm" class="login-form">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
+                        <label for="email"><i class="bi bi-envelope me-1"></i> Email</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="senha" placeholder="Senha" required>
+                        <label for="senha"><i class="bi bi-lock me-1"></i> Senha</label>
+                    </div>
+                    <div class="alert alert-danger login-alert d-none" id="loginError">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Email ou senha inválidos
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Entrar</span>
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="cadastro-gestor.html" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-person-plus"></i> Cadastro de Gestor
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="login-footer">
+                © 2025 Sistema de Estoque - Todos os direitos reservados
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
