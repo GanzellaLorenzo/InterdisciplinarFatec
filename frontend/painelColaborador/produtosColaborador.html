@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar-container"></div>
+
+        <main class="main-content">
+            <div class="header-area"></div>
+
+            <div class="content-container">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="content-title">Produtos</h1>
+                        <p class="content-subtitle">Visualização de produtos do estoque</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar produto...">
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <div class="form-check form-switch d-inline-block ms-3">
+                                    <input class="form-check-input" type="checkbox" id="mostrarInativos">
+                                    <label class="form-check-label" for="mostrarInativos">
+                                        Mostrar inativos
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card table-container">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Preço Compra</th>
+                                        <th>Preço Venda</th>
+                                        <th>Quantidade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaProdutos">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="carregandoProdutos" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Carregando produtos...</p>
+                        </div>
+                        <div id="nenhumProduto" class="alert alert-info m-3 d-none">
+                            <i class="bi bi-info-circle me-2"></i> Nenhum produto cadastrado.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="movimentacaoModal" tabindex="-1" aria-labelledby="movimentacaoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="movimentacaoModalLabel">Gerar Movimentação</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="movimentacaoForm">
+                                    <input type="hidden" id="movProdutoId">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Produto</label>
+                                        <p id="movProdutoNome" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Estoque Atual</label>
+                                        <p id="movEstoqueAtual" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="movTipo" class="form-label">Tipo de Movimentação*</label>
+                                        <select class="form-select" id="movTipo" required>
+                                            <option value="">Selecione</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="movQuantidade" class="form-label">Quantidade*</label>
+                                        <input type="number" class="form-control" id="movQuantidade" min="1" required>
+                                        <small id="quantidadeMax" class="form-text text-muted"></small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Estoque Após Movimentação</label>
+                                        <p id="movEstoqueFinal" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="btnConfirmarMovimentacao">Confirmar Movimentação</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/produtos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutosColaborador();
+        });
+        
+        async function carregarProdutosColaborador() {
+            try {
+                document.getElementById('carregandoProdutos').classList.remove('d-none');
+                document.getElementById('nenhumProduto').classList.add('d-none');
+                
+                const produtos = await Utils.fetchAPI('/produtos');
+                
+                const tabelaProdutos = document.getElementById('tabelaProdutos');
+                const mostrarInativos = document.getElementById('mostrarInativos')?.checked || false;
+                
+                document.getElementById('carregandoProdutos').classList.add('d-none');
+                
+                const produtosFiltrados = mostrarInativos 
+                    ? produtos 
+                    : produtos.filter(produto => produto.ativo);
+                    
+                if (produtosFiltrados.length === 0) {
+                    document.getElementById('nenhumProduto').classList.remove('d-none');
+                    return;
+                }
+
+                tabelaProdutos.innerHTML = '';
+                
+                produtosFiltrados.forEach(produto => {
+                    const tr = document.createElement('tr');
+                    
+                    if (!produto.ativo) {
+                        tr.classList.add('table-secondary');
+                    }
+                    
+                    tr.innerHTML = `
+                        <td>${produto.prodNome}</td>
+                        <td>${produto.prodDescricao || '-'}</td>
+                        <td>R$ ${produto.prodPrecoCompra ? parseFloat(produto.prodPrecoCompra).toFixed(2) : '-'}</td>
+                        <td>R$ ${parseFloat(produto.prodPrecoVenda).toFixed(2)}</td>
+                        <td>${produto.quantidade}</td>
+                        <td>
+                            ${produto.ativo ? `
+                            <button class="btn btn-sm btn-success gerar-movimentacao" data-id="${produto.prodId}" data-nome="${produto.prodNome}" data-estoque="${produto.quantidade}">
+                                <i class="bi bi-arrow-left-right"></i>
+                            </button>
+                            ` : '<span class="badge bg-secondary">Inativo</span>'}
+                        </td>
+                    `;
+                    tabelaProdutos.appendChild(tr);
+                });
+                
+                document.querySelectorAll('.gerar-movimentacao').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const prodId = this.getAttribute('data-id');
+                        const prodNome = this.getAttribute('data-nome');
+                        const estoque = parseInt(this.getAttribute('data-estoque'));
+                        
+                        document.getElementById('movProdutoId').value = prodId;
+                        document.getElementById('movProdutoNome').textContent = prodNome;
+                        document.getElementById('movEstoqueAtual').textContent = estoque;
+                        document.getElementById('movQuantidade').value = '';
+                        document.getElementById('movTipo').value = '';
+                        document.getElementById('movEstoqueFinal').textContent = '-';
+                        
+                        const movimentacaoModal = new bootstrap.Modal(document.getElementById('movimentacaoModal'));
+                        movimentacaoModal.show();
+                    });
+                });
+                
+                const movTipo = document.getElementById('movTipo');
+                const movQuantidade = document.getElementById('movQuantidade');
+                
+                if (movTipo && movQuantidade) {
+                    const atualizarEstoqueFinal = function() {
+                        const estoqueAtual = parseInt(document.getElementById('movEstoqueAtual').textContent);
+                        const quantidade = parseInt(document.getElementById('movQuantidade').value) || 0;
+                        const tipo = document.getElementById('movTipo').value;
+                        
+                        let estoqueFinal = estoqueAtual;
+                        
+                        if (tipo === 'ENTRADA') {
+                            estoqueFinal += quantidade;
+                            document.getElementById('quantidadeMax').textContent = '';
+                            document.getElementById('movQuantidade').removeAttribute('max');
+                        } else if (tipo === 'SAIDA') {
+                            estoqueFinal -= quantidade;
+                            document.getElementById('quantidadeMax').textContent = `Máximo: ${estoqueAtual}`;
+                            document.getElementById('movQuantidade').setAttribute('max', estoqueAtual);
+                        }
+                        
+                        document.getElementById('movEstoqueFinal').textContent = 
+                            (estoqueFinal >= 0) ? estoqueFinal : 'Estoque insuficiente';
+                        
+                        if (estoqueFinal < 0) {
+                            document.getElementById('movEstoqueFinal').classList.add('text-danger');
+                            document.getElementById('btnConfirmarMovimentacao').disabled = true;
+                        } else {
+                            document.getElementById('movEstoqueFinal').classList.remove('text-danger');
+                            document.getElementById('btnConfirmarMovimentacao').disabled = false;
+                        }
+                    };
+                    
+                    movTipo.addEventListener('change', atualizarEstoqueFinal);
+                    movQuantidade.addEventListener('input', atualizarEstoqueFinal);
+                    
+                    document.getElementById('btnConfirmarMovimentacao').addEventListener('click', async function() {
+                        try {
+                            const produtoId = document.getElementById('movProdutoId').value;
+                            const tipo = document.getElementById('movTipo').value;
+                            const quantidade = parseInt(document.getElementById('movQuantidade').value);
+                            
+                            if (!tipo || !quantidade || quantidade <= 0) {
+                                Utils.notifications.warning('Por favor, preencha todos os campos corretamente.');
+                                return;
+                            }
+                            
+                            const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+                            
+                            const movimentacao = {
+                                acao: tipo,
+                                produto: {
+                                    prodId: parseInt(produtoId)
+                                },
+                                quantidade: quantidade,
+                                usuario: {
+                                    userId: parseInt(usuario.id)
+                                }
+                            };
+                            
+                            await Utils.fetchAPI('/acoes', 'POST', movimentacao);
+                            
+                            const movimentacaoModal = bootstrap.Modal.getInstance(document.getElementById('movimentacaoModal'));
+                            movimentacaoModal.hide();
+                            
+                            Utils.notifications.success('Movimentação registrada com sucesso!');
+                            
+                            carregarProdutosColaborador();
+                            
+                        } catch (error) {
+                            Utils.handleError(error, 'Erro ao registrar movimentação');
+                        }
+                    });
+                }
+                
+                const checkboxInativo = document.getElementById('mostrarInativos');
+                if (checkboxInativo) {
+                    checkboxInativo.addEventListener('change', function() {
+                        carregarProdutosColaborador();
+                    });
+                }
+                
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        const searchTerm = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#tabelaProdutos tr');
+                        
+                        rows.forEach(row => {
+                            const nome = row.querySelector('td:first-child').textContent.toLowerCase();
+                            const descricao = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                            
+                            if (nome.includes(searchTerm) || descricao.includes(searchTerm)) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                Utils.handleError(error, 'Erro ao carregar produtos');
+                document.getElementById('carregandoProdutos').classList.add('d-none');
+            }
+        }
+    </script>
+</body>
+</html>

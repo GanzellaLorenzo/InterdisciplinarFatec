@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Colaborador - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- O sidebar será injetado aqui -->
+        <div class="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- O header será injetado aqui -->
+            <div class="header-area"></div>
+
+            <!-- Content -->
+            <div class="content-container">
+                <div class="content-header">
+                    <h1 class="content-title">Dashboard</h1>
+                    <p class="content-subtitle">Visão geral do sistema de estoque</p>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="row stats-row">
+                    <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon bg-primary-soft">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h5 class="stat-card-title">Total de Produtos</h5>
+                                    <h2 class="stat-card-value" id="totalProdutos">-</h2>
+                                    <p class="stat-card-desc">Produtos cadastrados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon bg-success-soft">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h5 class="stat-card-title">Entradas</h5>
+                                    <h2 class="stat-card-value" id="totalEntradas">-</h2>
+                                    <p class="stat-card-desc">Total de entradas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon bg-danger-soft">
+                                    <i class="bi bi-graph-down-arrow"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <h5 class="stat-card-title">Saídas</h5>
+                                    <h2 class="stat-card-value" id="totalSaidas">-</h2>
+                                    <p class="stat-card-desc">Total de saídas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Modules -->
+                <div class="content-section">
+                    <h2 class="section-title">Módulos do Sistema</h2>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-card-body">
+                                    <div class="module-card-icon">
+                                        <i class="bi bi-box-seam"></i>
+                                    </div>
+                                    <h3 class="module-card-title">Produtos</h3>
+                                    <p class="module-card-desc">Visualize os produtos disponíveis no estoque.</p>
+                                    <div class="module-card-actions">
+                                        <a href="../produtos/listar.html" class="btn btn-primary">
+                                            <i class="bi bi-list"></i> Listar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-card-body">
+                                    <div class="module-card-icon">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                    </div>
+                                    <h3 class="module-card-title">Movimentações</h3>
+                                    <p class="module-card-desc">Registre entradas e saídas de produtos no estoque.</p>
+                                    <div class="module-card-actions">
+                                        <a href="../movimentacoes/cadastrar.html" class="btn btn-primary">
+                                            <i class="bi bi-plus-lg"></i> Nova
+                                        </a>
+                                        <a href="../movimentacoes/listar.html" class="btn btn-outline-primary">
+                                            <i class="bi bi-list"></i> Listar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-card-body">
+                                    <div class="module-card-icon">
+                                        <i class="bi bi-journal-text"></i>
+                                    </div>
+                                    <h3 class="module-card-title">Auditoria</h3>
+                                    <p class="module-card-desc">Visualize o histórico de alterações e movimentações.</p>
+                                    <div class="module-card-actions">
+                                        <a href="../auditoria/listar.html" class="btn btn-primary">
+                                            <i class="bi bi-list"></i> Visualizar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
