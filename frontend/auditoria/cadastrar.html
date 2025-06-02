@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Movimentação - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- O sidebar será injetado aqui -->
+        <div class="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- O header será injetado aqui -->
+            <div class="header-area"></div>
+
+            <!-- Content -->
+            <div class="content-container">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="content-title">Registrar Movimentação</h1>
+                        <p class="content-subtitle">Informe os dados para registrar entrada ou saída</p>
+                    </div>
+                    <a href="listar.html" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+
+                <!-- Form Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <form id="movimentacaoForm">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="tipoMovimentacao" class="form-label">Tipo de Movimentação*</label>
+                                    <select class="form-select" id="tipoMovimentacao" required>
+                                        <option value="">Selecione</option>
+                                        <option value="ENTRADA">Entrada</option>
+                                        <option value="SAIDA">Saída</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="produtoId" class="form-label">Produto*</label>
+                                    <select class="form-select" id="produtoId" required>
+                                        <option value="">Carregando produtos...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="quantidade" class="form-label">Quantidade*</label>
+                                    <input type="number" class="form-control" id="quantidade" min="1" required>
+                                    <small id="quantidadeMax" class="form-text text-muted"></small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="listar.html" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg"></i> Registrar Movimentação
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/movimentacoes.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutosSelect();
+        });
+    </script>
+</body>
+</html>
