@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- O sidebar será injetado aqui -->
+        <div class="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- O header será injetado aqui -->
+            <div class="header-area"></div>
+
+            <!-- Content -->
+            <div class="content-container">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="content-title">Produtos</h1>
+                        <p class="content-subtitle">Gerenciamento de produtos do estoque</p>
+                    </div>
+                    <a href="cadastrar.html" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Novo Produto
+                    </a>
+                </div>
+
+                <!-- Products Table -->
+                <div class="card table-container">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Descrição</th>
+                                        <th>Preço Compra</th>
+                                        <th>Preço Venda</th>
+                                        <th>Quantidade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaProdutos">
+                                    <!-- Dados serão carregados via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="carregandoProdutos" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Carregando produtos...</p>
+                        </div>
+                        <div id="nenhumProduto" class="alert alert-info m-3 d-none">
+                            <i class="bi bi-info-circle me-2"></i> Nenhum produto cadastrado.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de Movimentação -->
+                <div class="modal fade" id="movimentacaoModal" tabindex="-1" aria-labelledby="movimentacaoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="movimentacaoModalLabel">Gerar Movimentação</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Conteúdo do modal -->
+                                <form id="movimentacaoForm">
+                                    <input type="hidden" id="movProdutoId">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Produto</label>
+                                        <p id="movProdutoNome" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Estoque Atual</label>
+                                        <p id="movEstoqueAtual" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="movTipo" class="form-label">Tipo de Movimentação*</label>
+                                        <select class="form-select" id="movTipo" required>
+                                            <option value="">Selecione</option>
+                                            <option value="ENTRADA">Entrada</option>
+                                            <option value="SAIDA">Saída</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="movQuantidade" class="form-label">Quantidade*</label>
+                                        <input type="number" class="form-control" id="movQuantidade" min="1" required>
+                                        <small id="quantidadeMax" class="form-text text-muted"></small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Estoque Após Movimentação</label>
+                                        <p id="movEstoqueFinal" class="form-control-plaintext fw-bold"></p>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="btnConfirmarMovimentacao">Confirmar Movimentação</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/produtos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarProdutos();
+        });
+    </script>
+</body>
+</html>
