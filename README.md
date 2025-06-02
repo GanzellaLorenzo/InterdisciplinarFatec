@@ -1,91 +1,106 @@
-# Sistema de Controle de Estoque
+# Sistema de Gestão de Estoque
 
-Um sistema web completo para gerenciamento de estoque, controle de produtos, movimentações e auditoria.
+Um sistema completo fullstack para gerenciamento de estoque, produtos e colaboradores, com controle de acesso diferenciado entre gestores e colaboradores.
 
 ## 📋 Sobre o Projeto
 
-Este sistema foi desenvolvido para gerenciar o estoque de produtos de uma empresa, permitindo o controle de entradas e saídas, cadastro de produtos e colaboradores, além de um sistema completo de auditoria para rastreamento de ações.
+Este sistema foi desenvolvido como projeto interdisciplinar da FATEC, oferecendo uma solução completa para gestão de estoques com controle de entradas e saídas, histórico de movimentações e auditoria detalhada de todas as operações.
 
-### ✨ Principais Recursos
+### Funcionalidades Principais
 
-- Dashboard com visão geral do estoque
-- Gerenciamento completo de produtos
-- Controle de entrada e saída de produtos
-- Gestão de colaboradores (perfil de gestor)
-- Sistema de auditoria para rastreamento de movimentações
-- Diferentes níveis de acesso (gestor e colaborador)
-- Interface responsiva para desktop e dispositivos móveis
+- **Gestão de Produtos**: Cadastro, edição, ativação/desativação e listagem de produtos
+- **Controle de Estoque**: Registro de entradas e saídas com atualizações automáticas do estoque
+- **Gestão de Usuários**: Cadastro e gerenciamento de colaboradores (pelo gestor)
+- **Auditoria**: Registro detalhado de todas as alterações e movimentações realizadas
+- **Dashboard**: Visão geral com estatísticas e informações relevantes
+- **Controle de Acesso**: Permissões diferenciadas para gestores e colaboradores
 
 ## 🚀 Tecnologias Utilizadas
 
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- Bootstrap 5
-- APIs RESTful
-- Fetch API
+### Backend
+- **Java 17** 
+- **Spring Boot 3.4.5**
+- **Spring Data JPA**
+- **PostgreSQL**
+- **Lombok**
+- **Maven**
 
-## 🛠️ Instalação e Execução
+### Frontend
+- **HTML5**
+- **CSS3**
+- **JavaScript (Vanilla)**
+- **Bootstrap 5**
+- **Bootstrap Icons**
+
+## 🔧 Instalação e Execução
 
 ### Pré-requisitos
+- Java 17
+- PostgreSQL
+- Maven
 
-- Node.js (para servir os arquivos estáticos)
-- Backend API em execução (Java Spring Boot)
+### Backend
 
-### Instalação
+1. Configure o banco de dados PostgreSQL:
+   ```sql
+   CREATE DATABASE estoque_db;
+   ```
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/GanzellaLorenzo/EstoqueFacilFatec.git
-cd controle-estoque
-```
+2. Configure as credenciais no arquivo `application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/estoque_db
+   spring.datasource.username=seu_usuario
+   spring.datasource.password=sua_senha
+   ```
 
-2. Configure a URL da API:
-   - Abra o arquivo `js/utils.js`
-   - Atualize a constante `API_URL` com o endereço do seu backend
+3. Execute a aplicação Spring Boot:
+   ```bash
+   cd backend
+   ./mvnw spring-boot:run
+   ```
+   A API estará disponível em http://localhost:8080/api
 
-3. Execute o projeto (usando um servidor local, como o Live Server do VS Code ou http-server):
-```bash
-# Usando http-server
-npx http-server
-```
+### Frontend
 
-## 📱 Funcionalidades
+1. O frontend pode ser executado diretamente abrindo os arquivos HTML em um navegador ou utilizando um servidor local como Live Server (extensão do VS Code).
 
-### Módulo de Produtos
-- Cadastro de produtos
-- Listagem com filtros
-- Edição e desativação
-- Controle de estoque
-
-### Módulo de Movimentações
-- Registro de entradas e saídas
-- Histórico de movimentações
-- Validação de estoque disponível
-
-### Módulo de Auditoria
-- Registro detalhado de todas as ações
-- Filtros por tipo de ação, usuário e período
-- Visualização de detalhes de cada operação
-
-### Módulo de Colaboradores (Perfil Gestor)
-- Cadastro de colaboradores
-- Gerenciamento de acesso
-- Ativação/desativação de contas
+2. Acesse a aplicação através do arquivo `index.html` na pasta frontend.
 
 ## 👥 Perfis de Usuário
 
 ### Gestor
 - Acesso completo ao sistema
-- Cadastro e gerenciamento de colaboradores
-- Visualização de relatórios gerenciais
-- Gerenciamento completo de produtos
+- Gerenciamento de produtos (CRUD)
+- Gerenciamento de colaboradores (CRUD)
+- Visualização de histórico de auditoria
+- Dashboard gerencial
 
 ### Colaborador
 - Visualização de produtos
-- Registro de movimentações
-- Visualização de histórico de auditoria
+- Registro de entradas e saídas no estoque
+- Visualização limitada de histórico
 
-## 📝 Licença
+## 🔒 Autenticação
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+O sistema utiliza autenticação básica com email e senha, diferenciando entre gestores e colaboradores. 
+Para testar o sistema, você pode criar um gestor através da tela de cadastro e posteriormente adicionar colaboradores.
+
+## 📊 Principais Telas
+
+- **Login**: Autenticação de usuários
+- **Dashboard**: Visão geral e estatísticas
+- **Produtos**: Listagem, cadastro e edição de produtos
+- **Colaboradores**: Gerenciamento de usuários colaboradores
+- **Auditoria**: Histórico de operações e alterações
+
+## 📜 Licença
+
+Este projeto é para fins educacionais como parte do currículo da FATEC.
+
+## 🤝 Contribuições
+
+Projeto desenvolvido como atividade interdisciplinar. Contribuições são bem-vindas através de pull requests.
+
+---
+
+Desenvolvido como projeto interdisciplinar da FATEC
