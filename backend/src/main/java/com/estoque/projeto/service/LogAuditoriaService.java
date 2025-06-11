@@ -1,6 +1,7 @@
 package com.estoque.projeto.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.estoque.projeto.entity.ColaboradorEntity;
 import com.estoque.projeto.entity.GestorEntity;
 import com.estoque.projeto.entity.LogAuditoriaEntity;
+import com.estoque.projeto.repository.GestorRepository;
 import com.estoque.projeto.repository.LogAuditoriaRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,10 +23,18 @@ import lombok.RequiredArgsConstructor;
 public class LogAuditoriaService {
 
     private final LogAuditoriaRepository logAuditoriaRepository;
+    private final GestorRepository gestorRepository;
     
     public LogAuditoriaEntity registrarLog(String tipoAcao, String descricao, 
                                            Long idRegistro, GestorEntity gestor, 
                                            ColaboradorEntity colaborador) {
+        
+        if (gestor != null && gestor.getNomeGestor() == null) {
+            Optional<GestorEntity> gestorCompleto = gestorRepository.findById(gestor.getUserId());
+            if (gestorCompleto.isPresent()) {
+                gestor = gestorCompleto.get();
+            }
+        }
         
         LogAuditoriaEntity log = LogAuditoriaEntity.builder()
                 .tipoAcao(tipoAcao)
