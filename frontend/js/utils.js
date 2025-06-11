@@ -274,5 +274,13 @@ const Utils = {
         }
         
         return error;
+    },
+    
+    ordenarPorDataDecrescente: function(array, campoData = 'dataHora') {
+        return array.sort((a, b) => {
+            const dataA = new Date(a[campoData] || 0);
+            const dataB = new Date(b[campoData] || 0);
+            return dataB - dataA; // Ordem decrescente (mais novo primeiro)
+        });
     }
 };
