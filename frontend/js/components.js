@@ -48,7 +48,13 @@ const Components = {
                             <span>Colaboradores</span>
                         </a>
                     </li>
-                    <li class="sidebar-menu-item${activeMenu === 'auditoria' ? ' active' : ''}">
+                    <li class="sidebar-menu-item${activeMenu === 'movimentacao' ? ' active' : ''}">
+                        <a href="${basePath}movimentacao/listar.html" class="sidebar-menu-link">
+                            <i class="bi bi-arrow-left-right"></i>
+                            <span>Movimentações</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item${activeMenu === 'auditoria' ? ' active' : ''} gestor-only">
                         <a href="${basePath}auditoria/listar.html" class="sidebar-menu-link">
                             <i class="bi bi-journal-text"></i>
                             <span>Auditoria</span>
@@ -101,6 +107,7 @@ const Components = {
         const path = window.location.pathname;
         if (path.includes('/produtos/') || path.includes('produtosColaborador')) return 'produtos';
         if (path.includes('/colaboradores/')) return 'colaboradores';
+        if (path.includes('/movimentacao/')) return 'movimentacao';
         if (path.includes('/auditoria/')) return 'auditoria';
         return 'dashboard';
     },
@@ -110,7 +117,8 @@ const Components = {
         if (path.includes('/painelColaborador/')) {
             return '../';
         }
-        if (path.includes('/produtos/') || path.includes('/colaboradores/') || path.includes('/auditoria/')) {
+        if (path.includes('/produtos/') || path.includes('/colaboradores/') || 
+            path.includes('/movimentacao/') || path.includes('/auditoria/')) {
             return '../';
         }
         return '';
@@ -129,7 +137,7 @@ const Components = {
             
             const searchPlaceholder = activeMenu === 'produtos' ? 'Buscar produtos...' : 
                                       activeMenu === 'colaboradores' ? 'Buscar colaboradores...' : 
-                                      activeMenu === 'auditoria' ? 'Buscar auditoria...' : 'Buscar...';
+                                      activeMenu === 'movimentacoes' ? 'Buscar movimentacoes...' : 'Buscar...';
             
             const showFilterInativos = activeMenu === 'produtos' || activeMenu === 'colaboradores';
             console.log("Mostrar filtro inativos:", showFilterInativos);

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Movimentações - Sistema de Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- O sidebar será injetado aqui -->
+        <div class="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- O header será injetado aqui -->
+            <div class="header-area"></div>
+
+            <!-- Content -->
+            <div class="content-container">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="content-title">Histórico de Movimentações</h1>
+                        <p class="content-subtitle">Registro de todas as entradas e saídas de produtos no estoque</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary" id="btnExportar">
+                            <i class="bi bi-download"></i> Exportar
+                        </button>
+                        <button class="btn btn-outline-secondary" id="btnFiltrarPeriodo">
+                            <i class="bi bi-calendar-range"></i> Filtrar por período
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Movimentações Table -->
+                <div class="card table-container">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Data/Hora</th>
+                                        <th>Usuário</th>
+                                        <th>Ação</th>
+                                        <th>Detalhes</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaMovimentacoes">
+                                    <!-- Dados serão carregados via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="carregandoMovimentacoes" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Carregando registros de movimentações...</p>
+                        </div>
+                        <div id="nenhumRegistro" class="alert alert-info m-3 d-none">
+                            <i class="bi bi-info-circle me-2"></i> Nenhum registro de movimentações encontrado.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Registro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="registro-detalhes">
+                        <div class="mb-3">
+                            <span class="fw-bold">Data/Hora:</span>
+                            <span id="detalheDataHora"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="fw-bold">Usuário:</span>
+                            <span id="detalheUsuario"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="fw-bold">Tipo de Ação:</span>
+                            <span id="detalheTipoAcao"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="fw-bold">Descrição:</span>
+                            <p id="detalheDescricao"></p>
+                        </div>
+                        <div class="mb-3" id="secaoDetalheProduto">
+                            <span class="fw-bold">Produto:</span>
+                            <p id="detalheProduto"></p>
+                        </div>
+                        <div class="mb-3" id="secaoDetalheAntes">
+                            <span class="fw-bold">Valores Anteriores:</span>
+                            <pre id="detalheAntes" class="bg-light p-2 rounded"></pre>
+                        </div>
+                        <div class="mb-3" id="secaoDetalheDepois">
+                            <span class="fw-bold">Valores Atuais:</span>
+                            <pre id="detalheDepois" class="bg-light p-2 rounded"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/movimentacao.js"></script>
+</body>
+</html>
