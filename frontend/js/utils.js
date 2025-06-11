@@ -1,21 +1,16 @@
-// Utilitários globais para o sistema
 const Utils = {
-    // URL base da API
     API_URL: 'http://localhost:8080/api',
     
-    // Formata um valor como moeda brasileira
     formatarMoeda: function(valor) {
         return 'R$ ' + parseFloat(valor).toFixed(2);
     },
     
-    // Formata uma data para o padrão brasileiro
     formatarData: function(data) {
         if (!data) return '-';
         const dataObj = new Date(data);
         return dataObj.toLocaleDateString('pt-BR');
     },
     
-    // Valida se um token está presente e redireciona para login se não estiver
     validarAutenticacao: function() {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -23,23 +18,9 @@ const Utils = {
             return false;
         }
         
-        // Verificar se o usuário está na página correta de acordo com seu tipo
-        const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-        const path = window.location.pathname;
-        
-        // Redirecionar se estiver na página errada
-        if (usuario.tipo === 'COLABORADOR' && path.includes('/dashboard.html')) {
-            window.location.href = 'painelColaborador/dashboardColaborador.html';
-            return false;
-        } else if (usuario.tipo === 'GESTOR' && path.includes('/painelColaborador/')) {
-            window.location.href = '../dashboard.html';
-            return false;
-        }
-        
         return true;
     },
     
-    // Retorna cabeçalhos padrão para requisições à API
     getHeaders: function(includeContentType = true) {
         const token = localStorage.getItem('token');
         const tipoToken = localStorage.getItem('tipoToken');
@@ -55,12 +36,10 @@ const Utils = {
         return headers;
     },
     
-    // Faz uma requisição à API com tratamento de erros padronizado
     async fetchAPI(endpoint, method = 'GET', data = null) {
         try {
             const url = endpoint.startsWith('http') ? endpoint : this.API_URL + endpoint;
             
-            // Lista de endpoints que não precisam de autenticação
             const publicEndpoints = [
                 '/login', 
                 '/gestores/login', 
@@ -68,18 +47,15 @@ const Utils = {
                 '/gestores'
             ];
             
-            // Verificar se o endpoint atual está na lista de endpoints públicos
             const isPublicEndpoint = publicEndpoints.some(publicPath => 
                 endpoint.includes(publicPath)
             );
             
-            // Verificar se há token antes de fazer a requisição a um endpoint protegido
             const token = localStorage.getItem('token');
             if (!token && !isPublicEndpoint) {
                 throw new Error('Usuário não autenticado');
             }
             
-            // Configurar opções da requisição
             const options = {
                 method: method,
                 headers: {
@@ -88,7 +64,6 @@ const Utils = {
                 }
             };
             
-            // Adicionar corpo da requisição para métodos que o suportam
             if (data && ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
                 options.body = JSON.stringify(data);
             }
@@ -105,13 +80,11 @@ const Utils = {
                     const errorData = await response.json();
                     errorMessage = errorData.message || errorMessage;
                 } catch (e) {
-                    // Falha ao parsear resposta como JSON
                 }
                 
                 throw new Error(errorMessage);
             }
             
-            // Verificar se a resposta tem conteúdo
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
                 return await response.json();
@@ -124,17 +97,14 @@ const Utils = {
         }
     },
     
-    // Exibe uma mensagem de alerta padronizada
     showAlert: function(message, type = 'info') {
         alert(message);
     },
     
-    // Confirma uma ação com o usuário
     confirm: function(message) {
         return window.confirm(message);
     },
     
-    // Determina o caminho base para os links
     getBasePath: function() {
         const path = window.location.pathname;
         if (path.includes('/produtos/') || path.includes('/colaboradores/') || path.includes('/movimentacoes/')) {
@@ -143,7 +113,6 @@ const Utils = {
         return '';
     },
     
-    // Função genérica para carregar lista de dados da API
     async carregarDados(endpoint, tabelaId, renderFunction, filtroFunction = null, configObj = {}) {
         try {
             if (!Utils.validarAutenticacao()) return;
@@ -159,7 +128,6 @@ const Utils = {
             
             if (loadingElement) loadingElement.classList.add('d-none');
             
-            // Filtrar dados se houver função de filtro
             const dadosFiltrados = filtroFunction ? filtroFunction(dados) : dados;
             
             if (dadosFiltrados.length === 0) {
@@ -172,7 +140,6 @@ const Utils = {
             dadosFiltrados.forEach(item => {
                 const tr = document.createElement('tr');
                 
-                // Adicionar classe para destacar itens inativos
                 if (item.hasOwnProperty('ativo') && !item.ativo) {
                     tr.classList.add('table-secondary');
                 }
@@ -181,7 +148,6 @@ const Utils = {
                 tabela.appendChild(tr);
             });
             
-            // Executar função de callback se fornecida
             if (configObj.callback) {
                 configObj.callback(dadosFiltrados);
             }
@@ -194,10 +160,8 @@ const Utils = {
         }
     },
     
-    // Sistema de notificações para mensagens ao usuário (alternativa aos alerts)
     notifications: {
         show: function(message, type = 'info', duration = 5000) {
-            // Criar container de notificações se não existir
             let container = document.getElementById('notification-container');
             if (!container) {
                 container = document.createElement('div');
@@ -209,7 +173,6 @@ const Utils = {
                 document.body.appendChild(container);
             }
             
-            // Criar a notificação
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show`;
             notification.role = 'alert';
@@ -218,10 +181,8 @@ const Utils = {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
             
-            // Adicionar ao container
             container.appendChild(notification);
             
-            // Auto-remover após o tempo definido
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => {
@@ -249,20 +210,16 @@ const Utils = {
         }
     },
     
-    // Tratamento de erros padronizado
     handleError: function(error, defaultMessage = 'Ocorreu um erro na operação') {
         console.error('Erro:', error);
         
-        // Determinar mensagem apropriada
         let message = defaultMessage;
         if (error && error.message) {
             message = error.message;
         }
         
-        // Mostrar notificação de erro
         this.notifications.error(message);
         
-        // Se for erro de autenticação, redirecionar para login
         if (error.status === 401 || error.message?.includes('autenticação') || error.message?.includes('token')) {
             localStorage.removeItem('token');
             localStorage.removeItem('tipoToken');
@@ -280,7 +237,7 @@ const Utils = {
         return array.sort((a, b) => {
             const dataA = new Date(a[campoData] || 0);
             const dataB = new Date(b[campoData] || 0);
-            return dataB - dataA; // Ordem decrescente (mais novo primeiro)
+            return dataB - dataA;
         });
     }
 };

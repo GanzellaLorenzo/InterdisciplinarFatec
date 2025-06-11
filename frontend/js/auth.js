@@ -54,7 +54,7 @@ async function login(email, senha) {
             localStorage.setItem('token', colaborador.token || 'Bearer-token');
             localStorage.setItem('tipoToken', 'Bearer');
             
-            window.location.href = 'painelColaborador/dashboardColaborador.html';
+            window.location.href = 'dashboard.html';
             return;
         }
 
@@ -75,17 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!window.location.href.includes('index.html') && !window.location.href.includes('cadastro-gestor.html')) {
         const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
         
-        if (usuario.tipo === 'COLABORADOR' && !window.location.href.includes('painelColaborador') &&
-            !window.location.href.includes('movimentacoes') && !window.location.href.includes('produtos') &&
-            !window.location.href.includes('auditoria')) {
-            window.location.href = 'painelColaborador/dashboardColaborador.html';
-            return;
-        } else if (usuario.tipo === 'GESTOR' && window.location.href.includes('painelColaborador')) {
-            window.location.href = '../dashboard.html';
+        if (!verificarAutenticacao()) {
             return;
         }
-        
-        verificarAutenticacao();
     }
 
     const loginForm = document.getElementById('loginForm');

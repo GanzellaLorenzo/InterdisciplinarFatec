@@ -5,9 +5,7 @@ const Components = {
         const isColaborador = usuario.tipo === 'COLABORADOR';
         const basePath = this.getBasePath();
         
-        const dashboardPath = isColaborador ? 
-            `${basePath}painelColaborador/dashboardColaborador.html` : 
-            `${basePath}dashboard.html`;
+        const dashboardPath = `${basePath}dashboard.html`;
         
         return `
         <aside class="sidebar">
@@ -37,7 +35,7 @@ const Components = {
                         </a>
                     </li>
                     <li class="sidebar-menu-item${activeMenu === 'produtos' ? ' active' : ''}">
-                        <a href="${isColaborador ? `${basePath}produtosColaborador.html` : `${basePath}produtos/listar.html`}" class="sidebar-menu-link">
+                        <a href="${basePath}produtos/listar.html" class="sidebar-menu-link">
                             <i class="bi bi-box-seam"></i>
                             <span>Produtos</span>
                         </a>
@@ -114,11 +112,12 @@ const Components = {
 
     getBasePath: function() {
         const path = window.location.pathname;
-        if (path.includes('/painelColaborador/')) {
-            return '../';
-        }
-        if (path.includes('/produtos/') || path.includes('/colaboradores/') || 
-            path.includes('/movimentacao/') || path.includes('/auditoria/')) {
+        // Simplificando a lógica para evitar caminhos incorretos
+        if (path.includes('/produtos/') || 
+            path.includes('/colaboradores/') || 
+            path.includes('/movimentacao/') || 
+            path.includes('/auditoria/') ||
+            path.includes('/painelColaborador/')) {
             return '../';
         }
         return '';
