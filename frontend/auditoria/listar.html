@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Auditoria - Sistema de Estoque</title>
+    <title>Auditoria - Sistema de Estoque</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/styles.css">
@@ -22,20 +22,62 @@
             <div class="content-container">
                 <div class="content-header d-flex justify-content-between align-items-center">
                     <div>
-                        <h1 class="content-title">Registro de Auditoria</h1>
-                        <p class="content-subtitle">Histórico de ações e alterações no sistema</p>
+                        <h1 class="content-title">Auditoria do Sistema</h1>
+                        <p class="content-subtitle">Registro de todas as atividades realizadas no sistema</p>
                     </div>
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-secondary" id="btnExportar">
                             <i class="bi bi-download"></i> Exportar
                         </button>
-                        <button class="btn btn-outline-secondary" id="btnFiltrarPeriodo">
-                            <i class="bi bi-calendar-range"></i> Filtrar por período
+                        <button class="btn btn-outline-secondary" id="btnFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse">
+                            <i class="bi bi-funnel"></i> Filtros
                         </button>
                     </div>
                 </div>
 
-                <!-- Auditoria Table -->
+                <!-- Filtros -->
+                <div class="collapse mb-4" id="filtrosCollapse">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Filtros de Auditoria</h5>
+                            <form id="filtrosForm" class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="tipoAcao" class="form-label">Tipo de Ação</label>
+                                    <select class="form-select" id="tipoAcao">
+                                        <option value="">Todos</option>
+                                        <option value="LOGIN">Login</option>
+                                        <option value="LOGOUT">Logout</option>
+                                        <option value="CRIAR_PRODUTO">Criação de Produto</option>
+                                        <option value="EDITAR_PRODUTO">Edição de Produto</option>
+                                        <option value="ENTRADA_ESTOQUE">Entrada de Estoque</option>
+                                        <option value="SAIDA_ESTOQUE">Saída de Estoque</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="usuario" class="form-label">Usuário</label>
+                                    <select class="form-select" id="usuario">
+                                        <option value="">Todos</option>
+                                        <!-- Será preenchido via JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dataInicio" class="form-label">Data Início</label>
+                                    <input type="datetime-local" class="form-control" id="dataInicio">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dataFim" class="form-label">Data Fim</label>
+                                    <input type="datetime-local" class="form-control" id="dataFim">
+                                </div>
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-outline-secondary me-2" id="btnLimparFiltros">Limpar</button>
+                                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Auditoria -->
                 <div class="card table-container">
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -44,8 +86,9 @@
                                     <tr>
                                         <th>Data/Hora</th>
                                         <th>Usuário</th>
-                                        <th>Ação</th>
-                                        <th>Detalhes</th>
+                                        <th>Tipo de Ação</th>
+                                        <th>Descrição</th>
+                                        <th>IP</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -63,6 +106,14 @@
                         <div id="nenhumRegistro" class="alert alert-info m-3 d-none">
                             <i class="bi bi-info-circle me-2"></i> Nenhum registro de auditoria encontrado.
                         </div>
+                    </div>
+                    <!-- Paginação -->
+                    <div class="card-footer">
+                        <nav aria-label="Navegação de páginas">
+                            <ul class="pagination justify-content-center" id="paginacao">
+                                <!-- Será gerado via JavaScript -->
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -95,17 +146,13 @@
                             <span class="fw-bold">Descrição:</span>
                             <p id="detalheDescricao"></p>
                         </div>
-                        <div class="mb-3" id="secaoDetalheProduto">
-                            <span class="fw-bold">Produto:</span>
-                            <p id="detalheProduto"></p>
+                        <div class="mb-3">
+                            <span class="fw-bold">IP:</span>
+                            <span id="detalheIP"></span>
                         </div>
-                        <div class="mb-3" id="secaoDetalheAntes">
-                            <span class="fw-bold">Valores Anteriores:</span>
-                            <pre id="detalheAntes" class="bg-light p-2 rounded"></pre>
-                        </div>
-                        <div class="mb-3" id="secaoDetalheDepois">
-                            <span class="fw-bold">Valores Atuais:</span>
-                            <pre id="detalheDepois" class="bg-light p-2 rounded"></pre>
+                        <div class="mb-3" id="secaoDetalheRegistro">
+                            <span class="fw-bold">ID do Registro:</span>
+                            <span id="detalheRegistroId"></span>
                         </div>
                     </div>
                 </div>
