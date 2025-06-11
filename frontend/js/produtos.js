@@ -21,6 +21,9 @@ async function carregarProdutos() {
             return;
         }
 
+        // Ordenar produtos - novos no topo
+        produtosFiltrados.sort((a, b) => b.prodId - a.prodId);
+        
         tabelaProdutos.innerHTML = '';
         
         produtosFiltrados.forEach(produto => {
@@ -69,7 +72,7 @@ function adicionarEventListenersBotoes() {
                 ? 'Tem certeza que deseja desativar este produto?' 
                 : 'Deseja reativar este produto?';
             
-            if (confirm(mensagem)) {
+            if (Utils.confirm(mensagem)) {
                 toggleStatusProduto(prodId, !isAtivo);
             }
         });
@@ -110,30 +113,6 @@ async function toggleStatusProduto(id, novoStatus) {
     }
 }
 
-async function excluirProduto(id) {
-    try {
-        const token = localStorage.getItem('token');
-        const tipoToken = localStorage.getItem('tipoToken');
-        
-        const response = await fetch(`${API_URL}/produtos/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `${tipoToken} ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Erro ao excluir produto');
-        }
-
-        alert('Produto excluído com sucesso!');
-        carregarProdutos();
-    } catch (error) {
-        console.error('Erro:', error);
-        alert('Erro ao excluir produto. Tente novamente.');
-    }
-}
-
 async function salvarProduto(produto, isEditing = false) {
     try {
         if (!produto.prodNome || !produto.prodPrecoVenda) {
@@ -161,25 +140,16 @@ async function salvarProduto(produto, isEditing = false) {
 
 async function carregarProduto(id) {
     try {
-        const token = localStorage.getItem('token');
-        const tipoToken = localStorage.getItem('tipoToken');
+        const produto = await Utils.fetchAPI(`/produtos/${id}`);
         
-        const response = await fetch(`${API_URL}/produtos/${id}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `${tipoToken} ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Erro ao carregar dados do produto');
+        if (!produto) {
+            throw new Error('Produto não encontrado');
         }
-
-        return await response.json();
+        
+        return produto;
     } catch (error) {
-        console.error('Erro:', error);
-        alert('Erro ao carregar dados do produto. Tente novamente.');
-        window.location.href = 'listar.html';
+        Utils.handleError(error, 'Erro ao carregar dados do produto');
+        throw error;
     }
 }
 
@@ -235,8 +205,6 @@ async function registrarMovimentacao() {
                 userId: parseInt(usuario.id)
             }
         };
-        
-        console.log('Enviando movimentação:', movimentacao);
         
         await Utils.fetchAPI('/acoes', 'POST', movimentacao);
         
@@ -318,11 +286,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             salvarProduto(produto, isEditing)
                 .then(response => {
-                    alert(isEditing ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!');
+                    Utils.notifications.success(isEditing ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!');
                     window.location.href = 'listar.html';
                 })
                 .catch(error => {
-                    alert('Erro ao ' + (isEditing ? 'atualizar' : 'cadastrar') + ' produto. Verifique os dados e tente novamente.');
+                    Utils.notifications.error('Erro ao ' + (isEditing ? 'atualizar' : 'cadastrar') + ' produto. Verifique os dados e tente novamente.');
                 });
         });
     }
@@ -346,9 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            aplicarFiltroBusca();
-        });
+        searchInput.addEventListener('input', aplicarFiltroBusca);
     }
 });
 
