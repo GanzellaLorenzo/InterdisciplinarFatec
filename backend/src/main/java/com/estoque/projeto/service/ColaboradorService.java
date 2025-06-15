@@ -31,12 +31,23 @@ public class ColaboradorService {
         return colaboradorRepository.save(colaborador);
     }
     
-    public ColaboradorEntity atualizar(Integer id, ColaboradorEntity colaborador) {
-        if (!colaboradorRepository.existsById(id)) {
-            throw new RuntimeException("Colaborador não encontrado");
-        }
-        colaborador.setUserId(id);
-        return colaboradorRepository.save(colaborador);
+    public ColaboradorEntity atualizar(Integer id, ColaboradorEntity colaboradorAtualizado) {
+        return colaboradorRepository.findById(id)
+            .map(colaboradorExistente -> {
+                if (colaboradorAtualizado.getNomeColaborador() != null) {
+                    colaboradorExistente.setNomeColaborador(colaboradorAtualizado.getNomeColaborador());
+                }
+                if (colaboradorAtualizado.getEmailColaborador() != null) {
+                    colaboradorExistente.setEmailColaborador(colaboradorAtualizado.getEmailColaborador());
+                }
+                if (colaboradorAtualizado.getSenhaColaborador() != null) {
+                    colaboradorExistente.setSenhaColaborador(colaboradorAtualizado.getSenhaColaborador());
+                }
+                colaboradorExistente.setAtivo(colaboradorAtualizado.isAtivo());
+                
+                return colaboradorRepository.save(colaboradorExistente);
+            })
+            .orElseThrow(() -> new RuntimeException("Colaborador não encontrado"));
     }
     
     public void excluir(Integer id) {
