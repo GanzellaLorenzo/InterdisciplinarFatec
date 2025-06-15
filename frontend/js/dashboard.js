@@ -4,31 +4,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function carregarEstatisticas() {
     try {
-        document.getElementById('totalProdutos').textContent = '0';
-        document.getElementById('totalEntradas').textContent = '0';
-        document.getElementById('totalSaidas').textContent = '0';
-        document.getElementById('totalUsuarios').textContent = '0';
+        const elTotalProdutos = document.getElementById('totalProdutos');
+        const elTotalEntradas = document.getElementById('totalEntradas');
+        const elTotalSaidas = document.getElementById('totalSaidas');
+        const elTotalUsuarios = document.getElementById('totalUsuarios');
+
+        if (elTotalProdutos) elTotalProdutos.textContent = '0';
+        if (elTotalEntradas) elTotalEntradas.textContent = '0';
+        if (elTotalSaidas) elTotalSaidas.textContent = '0';
+        if (elTotalUsuarios) elTotalUsuarios.textContent = '0';
 
         const produtos = await Utils.fetchAPI('/produtos');
         const produtosAtivos = produtos.filter(p => p.ativo).length;
-        document.getElementById('totalProdutos').textContent = produtosAtivos.toString();
+        if (elTotalProdutos) elTotalProdutos.textContent = produtosAtivos.toString();
 
         const movimentacoes = await Utils.fetchAPI('/acoes');
-        
         const entradas = movimentacoes.filter(m => m.acao === 'ENTRADA').length;
         const saidas = movimentacoes.filter(m => m.acao === 'SAIDA').length;
-        
-        document.getElementById('totalEntradas').textContent = entradas.toString();
-        document.getElementById('totalSaidas').textContent = saidas.toString();
+
+        if (elTotalEntradas) elTotalEntradas.textContent = entradas.toString();
+        if (elTotalSaidas) elTotalSaidas.textContent = saidas.toString();
 
         const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
         if (usuario.tipo === 'GESTOR') {
             const colaboradores = await Utils.fetchAPI('/colaboradores');
-            const colaboradoresAtivos = colaboradores.filter(c => 
+            const colaboradoresAtivos = colaboradores.filter(c =>
                 c.ativo && c.gestor && c.gestor.userId === parseInt(usuario.id)
             ).length;
-            
-            document.getElementById('totalUsuarios').textContent = colaboradoresAtivos.toString();
+            if (elTotalUsuarios) elTotalUsuarios.textContent = colaboradoresAtivos.toString();
         }
     } catch (error) {
         console.error('Erro ao carregar estatísticas:', error);

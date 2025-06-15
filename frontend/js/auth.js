@@ -1,21 +1,15 @@
 async function login(email, senha) {
     try {
         document.getElementById('loginError').classList.add('d-none');
-        
-        console.log('Tentando login com email:', email);
-        
+
         let response = await fetch(`${Utils.API_URL}/gestores/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, senha: senha })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
         });
 
         if (response.ok) {
             const gestor = await response.json();
-            console.log('Login como gestor bem-sucedido:', gestor);
-            
             localStorage.setItem('usuario', JSON.stringify({
                 id: gestor.userId,
                 nome: gestor.nomeGestor,
@@ -23,26 +17,20 @@ async function login(email, senha) {
                 empresa: gestor.empresaGestor,
                 tipo: 'GESTOR'
             }));
-            
             localStorage.setItem('token', gestor.token || 'Bearer-token');
             localStorage.setItem('tipoToken', 'Bearer');
-            
             window.location.href = 'dashboard.html';
             return;
         }
 
         response = await fetch(`${Utils.API_URL}/colaboradores/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, senha: senha })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
         });
 
         if (response.ok) {
             const colaborador = await response.json();
-            console.log('Login como colaborador bem-sucedido:', colaborador);
-            
             localStorage.setItem('usuario', JSON.stringify({
                 id: colaborador.userId,
                 nome: colaborador.nomeColaborador,
@@ -50,18 +38,14 @@ async function login(email, senha) {
                 gestorId: colaborador.gestor.userId,
                 tipo: 'COLABORADOR'
             }));
-            
             localStorage.setItem('token', colaborador.token || 'Bearer-token');
             localStorage.setItem('tipoToken', 'Bearer');
-            
             window.location.href = 'dashboard.html';
             return;
         }
 
-        console.error('Falha no login: credenciais inválidas');
         document.getElementById('loginError').classList.remove('d-none');
-    } catch (error) {
-        console.error('Erro ao fazer login:', error);
+    } catch {
         document.getElementById('loginError').classList.remove('d-none');
     }
 }
@@ -70,19 +54,14 @@ function verificarAutenticacao() {
     return Utils.validarAutenticacao();
 }
 
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (!window.location.href.includes('index.html') && !window.location.href.includes('cadastro-gestor.html')) {
-        const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-        
-        if (!verificarAutenticacao()) {
-            return;
-        }
+        if (!verificarAutenticacao()) return;
     }
 
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
@@ -90,5 +69,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-
